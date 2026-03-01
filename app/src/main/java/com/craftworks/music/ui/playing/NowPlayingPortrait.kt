@@ -243,7 +243,7 @@ fun NowPlayingPortrait(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                mediaController?.player?.let {
+                mediaController?.let {
                     ShuffleButton(
                         it,
                         iconTextColor,
