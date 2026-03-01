@@ -150,10 +150,10 @@ class MainActivity : ComponentActivity() {
 
                         override fun onIsPlayingChanged(isPlaying: Boolean) {
                             super.onIsPlayingChanged(isPlaying)
-                            // Automatically expand the bottom sheet when a song starts playing
-                            if (isPlaying) {
-                                coroutineScope.launch {
-                                    scaffoldState.bottomSheetState.expand()
+                            // Automatically navigate to now playing screen when a song starts playing
+                            if (isPlaying && metadata?.title != null) {
+                                navController.navigate(Screen.NowPlayingLandscape.route) {
+                                    launchSingleTop = true
                                 }
                             }
                         }
