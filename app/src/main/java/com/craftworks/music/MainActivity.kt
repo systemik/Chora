@@ -22,9 +22,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.BottomSheetScaffoldState
@@ -33,8 +30,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationRail
-import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
@@ -89,10 +84,6 @@ import com.craftworks.music.ui.playing.NowPlayingContent
 import com.craftworks.music.ui.playing.NowPlayingMiniPlayer
 import com.craftworks.music.ui.playing.dpToPx
 import com.craftworks.music.ui.theme.MusicPlayerTheme
-import com.gigamole.composefadingedges.FadingEdgesGravity
-import com.gigamole.composefadingedges.content.FadingEdgesContentType
-import com.gigamole.composefadingedges.content.scrollconfig.FadingEdgesScrollConfig
-import com.gigamole.composefadingedges.verticalFadingEdges
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -352,8 +343,6 @@ fun AnimatedBottomNavBar(
                 stringResource(R.string.Artists), R.drawable.rounded_artist_24, "artists_screen"
             ), BottomNavItem(
                 stringResource(R.string.radios), R.drawable.rounded_radio, "radio_screen"
-            ), BottomNavItem(
-                stringResource(R.string.playlists), R.drawable.placeholder, "playlist_screen"
             )
         )
     ).value
@@ -392,64 +381,39 @@ fun AnimatedBottomNavBar(
             }
         }
     } else {
-        val lazyColumnState = rememberLazyListState()
-        NavigationRail {
-            LazyColumn(
-                state = lazyColumnState,
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalFadingEdges(
-                        FadingEdgesContentType.Dynamic.Lazy.List(
-                            FadingEdgesScrollConfig.Dynamic(), lazyColumnState
-                        ), FadingEdgesGravity.All, 64.dp
-                    )
-            ) {
-                items(orderedNavItems) { item ->
-                    if (!item.enabled) return@items
-                    NavigationRailItem(
-                        selected = item.screenRoute == backStackEntry?.destination?.route,
-                        onClick = {
-                            if (item.screenRoute == backStackEntry?.destination?.route) return@NavigationRailItem
-                            navController.navigate(item.screenRoute) {
-                                launchSingleTop = true
-                            }
-                            coroutineScope.launch {
-                                if (scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) scaffoldState.bottomSheetState.partialExpand()
-                            }
-                        },
-                        label = { Text(text = item.title) },
-                        alwaysShowLabel = false,
-                        icon = {
-                            Icon(ImageVector.vectorResource(item.icon), contentDescription = item.title)
-                        },
-                    )
-                }
-                item {
-                    NavigationRailItem(
-                        selected = Screen.NowPlayingLandscape.route == backStackEntry?.destination?.route,
-                        onClick = {
-                            if (Screen.NowPlayingLandscape.route == backStackEntry?.destination?.route) return@NavigationRailItem
-                            navController.navigate(Screen.NowPlayingLandscape.route) {
-                                launchSingleTop = true
-                            }
-                            coroutineScope.launch {
-                                if (scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) scaffoldState.bottomSheetState.partialExpand()
-                            }
-                        },
-                        label = { Text(text = "Playing") },
-                        alwaysShowLabel = false,
-                        icon = {
-                            Icon(
-                                ImageVector.vectorResource(R.drawable.s_m_playback),
-                                contentDescription = "Playing"
-                            )
-                        },
-                    )
-                }
+        val expanded by remember { derivedStateOf { scaffoldState.bottomSheetState.targetValue == SheetValue.Expanded } }
+
+        val yTrans by animateIntAsState(
+            targetValue = if (expanded) dpToPx(
+                -80 - WindowInsets.navigationBars.asPaddingValues()
+                    .calculateBottomPadding().value.toInt()
+            )
+            else 0, label = "Fullscreen Translation"
+        )
+
+        NavigationBar(modifier = Modifier.offset { IntOffset(x = 0, y = -yTrans) }) {
+            orderedNavItems.forEachIndexed { _, item ->
+                if (!item.enabled) return@forEachIndexed
+                NavigationBarItem(
+                    selected = item.screenRoute == backStackEntry?.destination?.route,
+                    onClick = {
+                        if (item.screenRoute == backStackEntry?.destination?.route) return@NavigationBarItem
+                        navController.navigate(item.screenRoute) {
+                            launchSingleTop = true
+                        }
+                        coroutineScope.launch {
+                            if (scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) scaffoldState.bottomSheetState.partialExpand()
+                        }
+                    },
+                    label = { Text(text = item.title) },
+                    alwaysShowLabel = false,
+                    icon = {
+                        Icon(ImageVector.vectorResource(item.icon), contentDescription = item.title)
+                    })
             }
             // Show the exit button only on TV
             if (LocalConfiguration.current.uiMode and Configuration.UI_MODE_TYPE_MASK == Configuration.UI_MODE_TYPE_TELEVISION) {
-                NavigationRailItem(
+                NavigationBarItem(
                     selected = false,
                     onClick = {
                         (context as Activity).finish()
@@ -462,8 +426,7 @@ fun AnimatedBottomNavBar(
                             ImageVector.vectorResource(R.drawable.round_power_settings_new_24),
                             contentDescription = "Exit App"
                         )
-                    },
-                )
+                    })
             }
         }
     }
