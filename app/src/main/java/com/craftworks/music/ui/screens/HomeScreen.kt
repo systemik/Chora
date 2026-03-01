@@ -9,6 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -146,8 +147,7 @@ fun HomeScreen(
                             .offset(x = if (showNavidromeLogo) (-36).dp else 0.dp),
                     )
                 }
-                IconButton(
-                    onClick = {},
+                Box(
                     modifier = Modifier
                         .padding(end = 12.dp)
                         .size(48.dp)
@@ -159,7 +159,8 @@ fun HomeScreen(
                                     restoreState = true
                                 }
                             }
-                        )
+                        ),
+                    contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         ImageVector.vectorResource(R.drawable.rounded_settings_24),
