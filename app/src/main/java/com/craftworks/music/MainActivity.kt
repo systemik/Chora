@@ -363,7 +363,6 @@ fun AnimatedBottomNavBar(
                 if (!item.enabled) return@forEachIndexed
                 NavigationBarItem(
                     selected = item.screenRoute == backStackEntry?.destination?.route,
-                    //modifier = Modifier.bounceClick(),
                     onClick = {
                         if (item.screenRoute == backStackEntry?.destination?.route) return@NavigationBarItem
                         navController.navigate(item.screenRoute) {
@@ -379,6 +378,26 @@ fun AnimatedBottomNavBar(
                         Icon(ImageVector.vectorResource(item.icon), contentDescription = item.title)
                     })
             }
+            // Now Playing button
+            NavigationBarItem(
+                selected = Screen.NowPlayingLandscape.route == backStackEntry?.destination?.route,
+                onClick = {
+                    if (Screen.NowPlayingLandscape.route == backStackEntry?.destination?.route) return@NavigationBarItem
+                    navController.navigate(Screen.NowPlayingLandscape.route) {
+                        launchSingleTop = true
+                    }
+                    coroutineScope.launch {
+                        if (scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) scaffoldState.bottomSheetState.partialExpand()
+                    }
+                },
+                label = { Text(text = "Playing") },
+                alwaysShowLabel = false,
+                icon = {
+                    Icon(
+                        ImageVector.vectorResource(R.drawable.s_m_playback),
+                        contentDescription = "Playing"
+                    )
+                })
         }
     } else {
         val expanded by remember { derivedStateOf { scaffoldState.bottomSheetState.targetValue == SheetValue.Expanded } }
@@ -411,6 +430,26 @@ fun AnimatedBottomNavBar(
                         Icon(ImageVector.vectorResource(item.icon), contentDescription = item.title)
                     })
             }
+            // Now Playing button
+            NavigationBarItem(
+                selected = Screen.NowPlayingLandscape.route == backStackEntry?.destination?.route,
+                onClick = {
+                    if (Screen.NowPlayingLandscape.route == backStackEntry?.destination?.route) return@NavigationBarItem
+                    navController.navigate(Screen.NowPlayingLandscape.route) {
+                        launchSingleTop = true
+                    }
+                    coroutineScope.launch {
+                        if (scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) scaffoldState.bottomSheetState.partialExpand()
+                    }
+                },
+                label = { Text(text = "Playing") },
+                alwaysShowLabel = false,
+                icon = {
+                    Icon(
+                        ImageVector.vectorResource(R.drawable.s_m_playback),
+                        contentDescription = "Playing"
+                    )
+                })
             // Show the exit button only on TV
             if (LocalConfiguration.current.uiMode and Configuration.UI_MODE_TYPE_MASK == Configuration.UI_MODE_TYPE_TELEVISION) {
                 NavigationBarItem(
