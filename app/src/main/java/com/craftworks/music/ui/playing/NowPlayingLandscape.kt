@@ -191,7 +191,7 @@ fun NowPlayingLandscape(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                mediaController?.let {
+                mediaController?.player?.let {
                     ShuffleButton(
                         it,
                         iconTextColor,
