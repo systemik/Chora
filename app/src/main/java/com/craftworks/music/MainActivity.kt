@@ -115,6 +115,26 @@ class MainActivity : ComponentActivity() {
 
                 val coroutineScope = rememberCoroutineScope()
 
+                // Set background color to colorScheme.background
+                window.decorView.setBackgroundColor(
+                    MaterialTheme.colorScheme.background.toArgb()
+                )
+
+                val positionalThreshold = dpToPx(56).toFloat()
+                val velocityThreshold = dpToPx(125).toFloat()
+
+                val scaffoldState = remember {
+                    BottomSheetScaffoldState(
+                        bottomSheetState = SheetState(
+                            skipPartiallyExpanded = false,
+                            initialValue = SheetValue.PartiallyExpanded,
+                            skipHiddenState = true,
+                            velocityThreshold = { positionalThreshold },
+                            positionalThreshold = { velocityThreshold }
+                        ), snackbarHostState = SnackbarHostState()
+                    )
+                }
+
                 // Update metadata from mediaController.
                 LaunchedEffect(mediaController) {
                     if (mediaController?.currentMediaItem != null) {
@@ -144,25 +164,6 @@ class MainActivity : ComponentActivity() {
                     onDispose {
                         mediaController?.removeListener(listener)
                     }
-                }
-                // Set background color to colorScheme.background
-                window.decorView.setBackgroundColor(
-                    MaterialTheme.colorScheme.background.toArgb()
-                )
-
-                val positionalThreshold = dpToPx(56).toFloat()
-                val velocityThreshold = dpToPx(125).toFloat()
-
-                val scaffoldState = remember {
-                    BottomSheetScaffoldState(
-                        bottomSheetState = SheetState(
-                            skipPartiallyExpanded = false,
-                            initialValue = SheetValue.PartiallyExpanded,
-                            skipHiddenState = true,
-                            velocityThreshold = { positionalThreshold },
-                            positionalThreshold = { velocityThreshold }
-                        ), snackbarHostState = SnackbarHostState()
-                    )
                 }
                 val peekHeight by animateDpAsState(
                     targetValue = if (metadata?.title != null) 72.dp else 0.dp,
