@@ -6,7 +6,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -146,14 +146,19 @@ fun HomeScreen(
                     )
                 }
                 IconButton(
-                    onClick = {
-                        navHostController.navigate(Screen.Setting.route) {
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }, modifier = Modifier
+                    onClick = {},
+                    modifier = Modifier
                         .padding(end = 12.dp)
                         .size(48.dp)
+                        .combinedClickable(
+                            onClick = {},
+                            onLongClick = {
+                                navHostController.navigate(Screen.Setting.route) {
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
+                        )
                 ) {
                     Icon(
                         ImageVector.vectorResource(R.drawable.rounded_settings_24),
