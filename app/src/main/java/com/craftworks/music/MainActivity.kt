@@ -127,6 +127,16 @@ class MainActivity : ComponentActivity() {
                             super.onMediaItemTransition(mediaItem, reason)
                             metadata = mediaController?.currentMediaItem?.mediaMetadata
                         }
+
+                        override fun onIsPlayingChanged(isPlaying: Boolean) {
+                            super.onIsPlayingChanged(isPlaying)
+                            // Automatically expand the bottom sheet when a song starts playing
+                            if (isPlaying) {
+                                coroutineScope.launch {
+                                    scaffoldState.bottomSheetState.expand()
+                                }
+                            }
+                        }
                     }
 
                     mediaController?.addListener(listener)
