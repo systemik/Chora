@@ -32,7 +32,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -72,6 +76,19 @@ fun NowPlayingLandscape(
         animationSpec = tween(1000, 0, FastOutSlowInEasing),
         label = "Animated text color"
     )
+
+    // State to track when player is available
+    var playerAvailable by remember { mutableStateOf(false) }
+
+    // Check if player is available and trigger recomposition when it becomes available
+    LaunchedEffect(Unit) {
+        while (!playerAvailable) {
+            if (ChoraMediaLibraryService.getInstance()?.player != null) {
+                playerAvailable = true
+            }
+            kotlinx.coroutines.delay(100)
+        }
+    }
 
     Row {
         Column(
