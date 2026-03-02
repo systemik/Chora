@@ -92,8 +92,8 @@ fun NowPlayingLandscape(
 
     Row {
         Column(
-            Modifier.weight(1f).widthIn(min = 512.dp).fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceEvenly,
+            Modifier.weight(1f).widthIn(min = 512.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
         ) {
             // Album Art
             if (LocalConfiguration.current.screenHeightDp.dp > 512.dp){
