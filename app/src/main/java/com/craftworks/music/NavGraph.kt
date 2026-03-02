@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -83,12 +84,15 @@ fun SetupNavGraph(
     LyricsState.useLrcLib =
         MediaProviderSettingsManager(context).lrcLibLyricsFlow.collectAsStateWithLifecycle(true).value
 
+    val leftPadding = if (LocalConfiguration.current.orientation != Configuration.ORIENTATION_LANDSCAPE) 0.dp else 80.dp + WindowInsets.safeDrawing.asPaddingValues().calculateLeftPadding(
+        LayoutDirection.Ltr)
+
     val animationSpec = MaterialTheme.LocalMotionScheme.current.slowSpatialSpec<Float>()
 
     NavHost(
         navController = navController,
         startDestination = Screen.Home.route,
-        modifier = Modifier.padding(bottom = bottomPadding),
+        modifier = Modifier.padding(bottom = bottomPadding, start = leftPadding),
         enterTransition = {
             fadeIn(animationSpec)
         },
