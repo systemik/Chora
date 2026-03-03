@@ -92,42 +92,42 @@ fun NowPlayingLandscape(
 
     Row {
         Column(
-            Modifier.weight(1f).widthIn(min = 512.dp),
+            Modifier.weight(1f).widthIn(min = 212.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
         ) {
             // Album Art
-            if (LocalConfiguration.current.screenHeightDp.dp > 512.dp){
-                Column(
-                    Modifier.focusable(false).fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    /* Album Cover + Lyrics */
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(metadata?.artworkUri.toString().replace("size=128", "size=500"))
-                            .crossfade(true)
-                            .diskCachePolicy(
-                                CachePolicy.DISABLED
-                            )
-                            .build(),
-                        contentDescription = "Album Cover Art",
-                        placeholder = painterResource(R.drawable.placeholder),
-                        fallback = painterResource(R.drawable.placeholder),
-                        contentScale = ContentScale.FillWidth,
-                        alignment = Alignment.Center,
-                        modifier = Modifier
-                            .fillMaxHeight(0.6f)
-                            .aspectRatio(1f)
-                            .shadow(4.dp, RoundedCornerShape(24.dp), clip = true)
-                            .background(MaterialTheme.colorScheme.surfaceVariant),
-                    )
-                }
-            }
+            // if (LocalConfiguration.current.screenHeightDp.dp < 512.dp){
+            //     Column(
+            //         Modifier.focusable(false).fillMaxWidth(),
+            //         horizontalAlignment = Alignment.CenterHorizontally
+            //     ) {
+            //         /* Album Cover + Lyrics */
+            //         AsyncImage(
+            //             model = ImageRequest.Builder(LocalContext.current)
+            //                 .data(metadata?.artworkUri.toString().replace("size=128", "size=500"))
+            //                 .crossfade(true)
+            //                 .diskCachePolicy(
+            //                     CachePolicy.DISABLED
+            //                 )
+            //                 .build(),
+            //             contentDescription = "Album Cover Art",
+            //             placeholder = painterResource(R.drawable.placeholder),
+            //             fallback = painterResource(R.drawable.placeholder),
+            //             contentScale = ContentScale.FillWidth,
+            //             alignment = Alignment.Center,
+            //             modifier = Modifier
+            //                 .fillMaxHeight(0.6f)
+            //                 .aspectRatio(1f)
+            //                 .shadow(4.dp, RoundedCornerShape(24.dp), clip = true)
+            //                 .background(MaterialTheme.colorScheme.surfaceVariant),
+            //         )
+            //     }
+            // }
 
             /* Image (When lyrics open) + Song Title + Artist*/
             Row {
                 AnimatedVisibility(
-                    visible = lyricsOpen && LocalConfiguration.current.screenHeightDp.dp < 512.dp,
+                    visible = lyricsOpen && LocalConfiguration.current.screenHeightDp.dp > 212.dp,
                     modifier = Modifier
                 ) {
                     AsyncImage(
@@ -152,7 +152,7 @@ fun NowPlayingLandscape(
                     )
                 }
 
-                if (LocalConfiguration.current.screenHeightDp.dp < 512.dp)
+                if (LocalConfiguration.current.screenHeightDp.dp > 212.dp)
                     Spacer(Modifier.animateContentSize().width(if (lyricsOpen) 0.dp else 24.dp))
                 else
                     Spacer(Modifier.width(24.dp))
@@ -161,7 +161,7 @@ fun NowPlayingLandscape(
                     modifier = Modifier
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Top
+                    verticalArrangement = Arrangement.Center
                 ) {
                     Text(
                         text = metadata?.title.toString(),
@@ -240,24 +240,24 @@ fun NowPlayingLandscape(
                     )
                 }
             }
-            if (LocalConfiguration.current.screenHeightDp.dp < 512.dp){
-                Row(
-                    modifier = Modifier
-                        .wrapContentHeight()
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
-                        .selectableGroup(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    LyricsButton(iconTextColor, 48.dp)
-                }
-            }
+            //if (LocalConfiguration.current.screenHeightDp.dp < 512.dp){
+            //    Row(
+            //        modifier = Modifier
+            //            .wrapContentHeight()
+            //            .fillMaxWidth()
+            //            .padding(horizontal = 12.dp, vertical = 6.dp)
+            //            .selectableGroup(),
+            //        horizontalArrangement = Arrangement.Center,
+            //        verticalAlignment = Alignment.CenterVertically
+            //    ) {
+            //        LyricsButton(iconTextColor, 48.dp)
+            //    }
+            //}
         }
 
         val lyrics by LyricsState.lyrics.collectAsStateWithLifecycle()
 
-        if (LocalConfiguration.current.screenHeightDp.dp < 512.dp){
+        if (LocalConfiguration.current.screenHeightDp.dp > 212.dp){
             Crossfade(
                 lyricsOpen,
                 label = ""
