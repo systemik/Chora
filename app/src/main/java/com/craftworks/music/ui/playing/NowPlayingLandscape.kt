@@ -90,7 +90,7 @@ fun NowPlayingLandscape(
         }
     }
 
-    Row {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         Column(
             Modifier.weight(1f).widthIn(min = 212.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
